@@ -1,10 +1,10 @@
-- test_add_new_book_add_two_books	Добавление двух книг, проверка количества
-- test_add_new_book_with_valid_name	Добавление книги с валидным названием
-- test_add_new_book_with_invalid_name_not_added	Параметризованный тест: добавление книги с невалидным названием (пустая строка, длинная строка)
-- test_add_new_book_duplicate_not_added	Запрет на добавление дубликата книги
-- test_set_book_genre	Установка жанра для книги
-- test_get_books_for_children_excludes_age_rating	Получение списка книг для детей (исключение книг с возрастным рейтингом)
-- test_add_book_in_favorites	Добавление книги в избранное
-- test_delete_book_from_favorites	Удаление книги из избранного
-- test_get_books_with_specific_genre	Получение списка книг по конкретному жанру
-- test_set_book_genre_invalid_genre_not_set	Проверка, что нельзя установить несуществующий жанр
+- test_add_new_book_add_two_books	Добавление двух книг
+- test_add_new_book_with_invalid_name_not_added	Невалидные названия (параметризованный)
+- test_add_new_book_duplicate_not_added	Запрет дубликатов
+- test_set_book_genre	Установка жанра
+- test_set_book_genre_invalid_genre_not_set	Запрет несуществующего жанра
+- test_get_books_with_specific_genre	Получение книг по жанру
+- test_get_books_for_children_excludes_age_rating	Книги для детей
+- test_add_and_delete_book_in_favorites	Добавление и удаление из избранного-
+- test_get_books_genre_returns_correct_dict	Получение словаря книг
+- test_get_book_genre_scenarios	Получение жанра (3 сценария)
