@@ -87,7 +87,7 @@ class TestBooksCollector:
         assert 'Оно' not in children_books
         assert len(children_books) == 2
 
-    def test_add_and_delete_book_in_favorites(self):
+    def test_add_book_in_favorites(self):
         collector = BooksCollector()
         book_name = 'Дюна'
         
@@ -96,7 +96,13 @@ class TestBooksCollector:
         
         assert book_name in collector.get_list_of_favorites_books()
         assert len(collector.get_list_of_favorites_books()) == 1
+
+    def test_delete_book_from_favorites(self):
+        collector = BooksCollector()
+        book_name = 'Дюна'
         
+        collector.add_new_book(book_name)
+        collector.add_book_in_favorites(book_name)
         collector.delete_book_from_favorites(book_name)
         
         assert book_name not in collector.get_list_of_favorites_books()
@@ -117,13 +123,139 @@ class TestBooksCollector:
         assert books_genre['Дюна'] == 'Фантастика'
         assert books_genre['Властелин колец'] == ''
 
-    def test_get_book_genre_scenarios(self):
+    def test_get_book_genre_for_existing_book_with_genre(self):
+        collector = BooksCollector()
+        book_name = 'Дюна'
+        
+        collector.add_new_book(book_name)
+        collector.set_book_genre(book_name, 'Фантастика')
+        
+        genre = collector.get_book_genre(book_name)
+        
+        assert genre == 'Фантастика'
+
+    def test_get_book_genre_for_existing_book_without_genre(self):
+        collector = BooksCollector()
+        book_name = 'Дюна'
+        
+        collector.add_new_book(book_name)
+        
+        genre = collector.get_book_genre(book_name)
+        
+        assert genre == ''
+
+    def test_get_book_genre_for_nonexistent_book(self):
+        collector = BooksCollector()
+        
+        genre = collector.get_book_genre('Несуществующая книга')
+        
+        assert genre is None
+
+    def test_get_book_genre_after_genre_change(self):
+        collector = BooksCollector()
+        book_name = 'Дюна'
+        
+        collector.add_new_book(book_name)
+        collector.set_book_genre(book_name, 'Фантастика')
+        collector.set_book_genre(book_name, 'Ужасы')
+        
+        genre = collector.get_book_genre(book_name)
+        
+        assert genre == 'Ужасы'
+
+    def test_get_list_of_favorites_books_returns_empty_list_initially(self):
+        collector = BooksCollector()
+        
+        favorites = collector.get_list_of_favorites_books()
+        
+        assert isinstance(favorites, list)
+        assert len(favorites) == 0
+
+    def test_get_list_of_favorites_books_returns_correct_books(self):
+        collector = BooksCollector()
+        
+        collector.add_new_book('Дюна')
+        collector.add_new_book('Властелин колец')
+        collector.add_new_book('Оно')
+        
+        collector.add_book_in_favorites('Дюна')
+        collector.add_book_in_favorites('Властелин колец')
+        
+        favorites = collector.get_list_of_favorites_books()
+        
+        assert len(favorites) == 2
+        assert 'Дюна' in favorites
+        assert 'Властелин колец' in favorites
+        assert 'Оно' not in favorites
+
+    def test_get_list_of_favorites_books_after_removing_from_favorites(self):
+        collector = BooksCollector()
+        
+        collector.add_new_book('Дюна')
+        collector.add_book_in_favorites('Дюна')
+        collector.delete_book_from_favorites('Дюна')
+        
+        favorites = collector.get_list_of_favorites_books()
+        
+        assert len(favorites) == 0
+
+    def test_get_list_of_favorites_books_with_duplicate_additions(self):
+        collector = BooksCollector()
+        book_name = 'Дюна'
+        
+        collector.add_new_book(book_name)
+        collector.add_book_in_favorites(book_name)
+        collector.add_book_in_favorites(book_name)
+        
+        favorites = collector.get_list_of_favorites_books()
+        
+        assert len(favorites) == 1
+        assert book_name in favorites
+
+    def test_get_books_genre_returns_empty_dict_initially(self):
+        collector = BooksCollector()
+        
+        books_genre = collector.get_books_genre()
+        
+        assert isinstance(books_genre, dict)
+        assert len(books_genre) == 0
+
+    def test_get_books_genre_after_adding_books(self):
+        collector = BooksCollector()
+        
+        collector.add_new_book('Дюна')
+        collector.add_new_book('Властелин колец')
+        
+        books_genre = collector.get_books_genre()
+        
+        assert len(books_genre) == 2
+        assert 'Дюна' in books_genre
+        assert 'Властелин колец' in books_genre
+
+    def test_get_books_genre_with_multiple_genres(self):
+        collector = BooksCollector()
+        
+        collector.add_new_book('Дюна')
+        collector.add_new_book('Властелин колец')
+        collector.add_new_book('Оно')
+        
+        collector.set_book_genre('Дюна', 'Фантастика')
+        collector.set_book_genre('Властелин колец', 'Фантастика')
+        collector.set_book_genre('Оно', 'Ужасы')
+        
+        books_genre = collector.get_books_genre()
+        
+        assert books_genre['Дюна'] == 'Фантастика'
+        assert books_genre['Властелин колец'] == 'Фантастика'
+        assert books_genre['Оно'] == 'Ужасы'
+
+    def test_get_books_genre_immutability(self):
         collector = BooksCollector()
         
         collector.add_new_book('Дюна')
         collector.set_book_genre('Дюна', 'Фантастика')
-        collector.add_new_book('Винни Пух')
+        
+        books_genre = collector.get_books_genre()
+        books_genre['Дюна'] = 'Ужасы'
         
         assert collector.get_book_genre('Дюна') == 'Фантастика'
-        assert collector.get_book_genre('Винни Пух') == ''
-        assert collector.get_book_genre('Несуществующая книга') is None
